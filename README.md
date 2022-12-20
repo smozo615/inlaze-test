@@ -32,6 +32,10 @@
 $ npm install
 ```
 
+## Create .env file
+
+In order for the app to work, you must create an .env file in the root folder of the project and then fill it in following the .env.example file as a guide.
+
 ## Running the app
 
 ```bash
