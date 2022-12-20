@@ -4,6 +4,7 @@ import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
 import config from './config';
 
 @Module({
@@ -21,6 +22,7 @@ import config from './config';
         JWT_SECRET: Joi.string().alphanum().min(8).required(),
       }),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
