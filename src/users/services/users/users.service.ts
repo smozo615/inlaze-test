@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../../models/users.model';
-import { SignupDto } from 'src/users/dtos/users.dto';
+import { LoginDto, SignupDto } from 'src/users/dtos/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,6 +35,36 @@ export class UsersService {
     const token = await this.generateJWT(user);
 
     return token;
+  }
+
+  async login(data: LoginDto) {
+    const { username, password } = data;
+
+    // Check if user exists
+    const user = await this.findByUsername(username);
+
+    // Check if password is correct
+    await this.verifyPassword(password, user.password);
+
+    // Generate JWT
+    const token = this.generateJWT(user);
+
+    return token;
+  }
+
+  private async findByUsername(username: string) {
+    const user = await this.userModel.findOne({ where: { username } });
+    if (!user) {
+      throw new ConflictException('Invalid username or password');
+    }
+    return user;
+  }
+
+  private async verifyPassword(passwordInReq: string, passwordInDb: string) {
+    const match = await bcrypt.compare(passwordInReq, passwordInDb);
+    if (!match) {
+      throw new ConflictException('Invalid username or password');
+    }
   }
 
   private async generateJWT(user: User) {

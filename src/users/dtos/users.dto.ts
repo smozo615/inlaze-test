@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class SignupDto {
   @ApiProperty()
@@ -22,3 +22,8 @@ export class SignupDto {
   @IsNotEmpty()
   readonly password: string;
 }
+
+export class LoginDto extends PickType(SignupDto, [
+  'username',
+  'password',
+] as const) {}
