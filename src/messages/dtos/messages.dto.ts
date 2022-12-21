@@ -21,3 +21,7 @@ export class MessageDto {
 export class CreateMessageDto extends PickType(MessageDto, [
   'content',
 ] as const) {}
+
+export class UpdateMessageDto extends PickType(MessageDto, [
+  'content',
+] as const) {}
