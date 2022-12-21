@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { MessagesModule } from './messages/messages.module';
-import { AuthMiddleware } from './middlewares/auth/auth.middleware';
+import { AuthMiddleware } from './utils/middlewares/auth/auth.middleware';
 import config from './config';
 
 @Module({
