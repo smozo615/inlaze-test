@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -34,7 +35,7 @@ export class UsersController {
   }
 
   // Login
-  @Post('/login')
+  @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() data: LoginDto,
@@ -49,5 +50,13 @@ export class UsersController {
     });
 
     return { status: 'logged in' };
+  }
+
+  // Logout
+  @Get('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('user');
+
+    return { status: 'logged out' };
   }
 }
