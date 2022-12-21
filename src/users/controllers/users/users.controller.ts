@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 
 import { UsersService } from '../../services/users/users.service';
 import { SignupDto } from '../../dtos/users.dto';
@@ -9,8 +10,19 @@ export class UsersController {
 
   // Register new user
   @Post('signup')
-  async signup(@Body() data: SignupDto) {
+  async signup(
+    @Body() data: SignupDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // Store new user in DB and return JWT
     const token = await this.usersService.signup(data);
-    return { token };
+
+    // Store JWT in cookie
+    const cookieExpirationTime = 1200 * 1000;
+    res.cookie('user', token, {
+      expires: new Date(Date.now() + cookieExpirationTime),
+    });
+
+    return { status: 'Sign up' };
   }
 }
