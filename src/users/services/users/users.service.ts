@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -70,5 +74,13 @@ export class UsersService {
   private async generateJWT(user: User) {
     const payload = { sub: user.id };
     return this.jwtService.sign(payload);
+  }
+
+  async validateJWT(token: string) {
+    const payload = await this.jwtService.verify(token);
+    if (!payload) {
+      throw new UnauthorizedException();
+    }
+    return payload;
   }
 }
