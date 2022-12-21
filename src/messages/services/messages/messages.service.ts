@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { Message } from 'src/messages/models/messages.model';
@@ -23,10 +27,13 @@ export class MessagesService {
     return messages;
   }
 
-  async update(id: number, data: UpdateMessageDto) {
+  async update(id: number, data: UpdateMessageDto, userId: number) {
     const message = await this.messageModel.findByPk(id);
     if (!message) {
       throw new NotFoundException();
+    }
+    if (Number(message.userId) !== userId) {
+      throw new ForbiddenException();
     }
     await message.update({ ...data });
     return message;

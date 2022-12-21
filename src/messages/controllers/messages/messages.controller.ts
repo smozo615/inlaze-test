@@ -57,8 +57,10 @@ export class MessagesController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateMessageDto,
+    @Req() req: Request,
   ) {
-    const updatedMessage = await this.messagesService.update(id, data);
+    const userId = Number(req.currentUser.id);
+    const updatedMessage = await this.messagesService.update(id, data, userId);
     return updatedMessage;
   }
 }
