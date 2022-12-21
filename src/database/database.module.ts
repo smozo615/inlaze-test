@@ -3,6 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { User } from '../users/models/users.model';
+import { Message } from '../messages/models/messages.model';
 import config from '../config';
 
 @Global()
@@ -18,7 +19,7 @@ import config from '../config';
           username: user,
           password,
           database: name,
-          models: [User],
+          models: [User, Message],
         };
       },
       inject: [config.KEY],
