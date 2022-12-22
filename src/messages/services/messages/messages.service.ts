@@ -4,9 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 
 import { Message } from 'src/messages/models/messages.model';
-import { MessageDto, UpdateMessageDto } from 'src/messages/dtos/messages.dto';
+import {
+  FilterDto,
+  MessageDto,
+  UpdateMessageDto,
+} from 'src/messages/dtos/messages.dto';
+import { User } from 'src/users/models/users.model';
 
 @Injectable()
 export class MessagesService {
@@ -17,8 +23,33 @@ export class MessagesService {
     return newMessage;
   }
 
-  async findAll() {
-    const messages = await this.messageModel.findAll();
+  async findAll(filters?: FilterDto) {
+    const options = {
+      include: {
+        model: User,
+        where: {},
+      },
+      where: {},
+      order: [],
+    };
+
+    if (filters.name) {
+      options.include.where = {
+        fullName: {
+          [Op.iLike]: `%${filters.name}%`,
+        },
+      };
+    }
+
+    if (filters.date) {
+      options.where = { date: { [Op.gte]: `${filters.date}` } };
+    }
+
+    if (filters.messagesOrder) {
+      options.order.push(['date', `${filters.messagesOrder}`]);
+    }
+
+    const messages = await this.messageModel.findAll(options);
     return messages;
   }
 

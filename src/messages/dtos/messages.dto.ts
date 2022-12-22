@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsDate, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class MessageDto {
@@ -25,3 +32,23 @@ export class CreateMessageDto extends PickType(MessageDto, [
 export class UpdateMessageDto extends PickType(MessageDto, [
   'content',
 ] as const) {}
+
+enum order {
+  Asc = 'ASC',
+  Desc = 'DESC',
+}
+
+export class FilterDto {
+  @ApiProperty()
+  @IsOptional()
+  name?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  date?: string;
+
+  @ApiProperty()
+  @IsEnum(order)
+  @IsOptional()
+  messagesOrder?: order;
+}

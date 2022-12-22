@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import {
 import { MessagesService } from '../../services/messages/messages.service';
 import {
   CreateMessageDto,
+  FilterDto,
   UpdateMessageDto,
 } from 'src/messages/dtos/messages.dto';
 import { AuthGuard } from '../../../utils/guards/auth/auth.guard';
@@ -39,8 +41,9 @@ export class MessagesController {
   }
   // Get all messages
   @Get()
-  async getAllMessage() {
-    const messages = await this.messagesService.findAll();
+  async getAllMessage(@Query() filters: FilterDto) {
+    console.log(filters);
+    const messages = await this.messagesService.findAll(filters);
     return messages;
   }
 

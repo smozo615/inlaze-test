@@ -30,7 +30,6 @@ export class Message extends Model {
   @Column
   date: Date;
 
-  @Expose()
   @ForeignKey(() => User)
   @Column({ field: 'user_id' })
   userId: string;
