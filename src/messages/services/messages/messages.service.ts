@@ -54,7 +54,7 @@ export class MessagesService {
   }
 
   async findCurrentUserMessage(userId: number, filters?) {
-    const options: FindOptions = { where: { userId } };
+    const options: FindOptions = { where: { userId }, order: [] };
 
     if (filters.date) {
       options.where['date'] = { [Op.gte]: `${filters.date}` };
