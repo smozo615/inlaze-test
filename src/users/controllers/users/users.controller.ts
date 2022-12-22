@@ -7,17 +7,20 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { ApiConflictResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { UsersService } from '../../services/users/users.service';
 import { LoginDto, SignupDto } from '../../dtos/users.dto';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   // Register new user
   @Post('signup')
+  @ApiConflictResponse({ description: 'Invalid username' })
   async signup(
     @Body() data: SignupDto,
     @Res({ passthrough: true }) res: Response,
@@ -37,6 +40,7 @@ export class UsersController {
   // Login
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiConflictResponse({ description: 'Invalid username or password' })
   async login(
     @Body() data: LoginDto,
     @Res({ passthrough: true }) res: Response,

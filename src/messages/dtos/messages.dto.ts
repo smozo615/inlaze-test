@@ -9,12 +9,12 @@ import {
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
 export class MessageDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'message content' })
   @IsString()
   @IsNotEmpty()
   readonly content: string;
 
-  @ApiProperty({ format: Date() })
+  @ApiProperty({ description: 'message date' })
   @IsDate()
   @IsNotEmpty()
   readonly date: string;

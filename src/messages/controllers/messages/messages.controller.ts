@@ -10,6 +10,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { MessagesService } from '../../services/messages/messages.service';
@@ -21,6 +29,7 @@ import {
 } from '../../dtos/messages.dto';
 import { AuthGuard } from '../../../utils/guards/auth/auth.guard';
 
+@ApiTags('Messages')
 @Controller('messages')
 @UseGuards(AuthGuard)
 export class MessagesController {
@@ -28,6 +37,12 @@ export class MessagesController {
 
   // Create message
   @Post()
+  @ApiCreatedResponse({
+    description: 'Message has been successfully created',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async create(@Body() data: CreateMessageDto, @Req() req: Request) {
     const userId = Number(req.currentUser.id);
 
@@ -42,6 +57,8 @@ export class MessagesController {
   }
   // Get all messages
   @Get()
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getAllMessage(@Query() filters: FilterDto) {
     const messages = await this.messagesService.findAll(filters);
     return messages;
@@ -49,6 +66,8 @@ export class MessagesController {
 
   // Get current user messages
   @Get('current_user')
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getCurrent(
     @Req() req: Request,
     @Query() filters: FilterCurrentUserMessagesDto,
@@ -63,6 +82,10 @@ export class MessagesController {
 
   // Update one message
   @Put(':id')
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiNotFoundResponse({ description: 'Message not found' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateMessageDto,
