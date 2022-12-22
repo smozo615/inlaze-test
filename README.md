@@ -21,6 +21,13 @@ Before running the API, you must start the database in docker with docker compos
 $ docker compose up -d
 ```
 
+and now, you must run migrations in db (Create tables)
+
+```bash
+# Sequelize-cli
+$ npx sequelize-cli db:migrate
+```
+
 ## Running the app
 
 ```bash
