@@ -10,15 +10,16 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import { MessagesService } from '../../services/messages/messages.service';
 import {
   CreateMessageDto,
+  FilterCurrentUserMessagesDto,
   FilterDto,
   UpdateMessageDto,
-} from 'src/messages/dtos/messages.dto';
+} from '../../dtos/messages.dto';
 import { AuthGuard } from '../../../utils/guards/auth/auth.guard';
-import { Request } from 'express';
 
 @Controller('messages')
 @UseGuards(AuthGuard)
@@ -42,16 +43,21 @@ export class MessagesController {
   // Get all messages
   @Get()
   async getAllMessage(@Query() filters: FilterDto) {
-    console.log(filters);
     const messages = await this.messagesService.findAll(filters);
     return messages;
   }
 
   // Get current user messages
   @Get('current_user')
-  async getCurrent(@Req() req: Request) {
+  async getCurrent(
+    @Req() req: Request,
+    @Query() filters: FilterCurrentUserMessagesDto,
+  ) {
     const userId = Number(req.currentUser.id);
-    const messages = await this.messagesService.findCurrentUserMessage(userId);
+    const messages = await this.messagesService.findCurrentUserMessage(
+      userId,
+      filters,
+    );
     return messages;
   }
 

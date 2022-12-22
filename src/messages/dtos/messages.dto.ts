@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsEnum,
 } from 'class-validator';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
 export class MessageDto {
   @ApiProperty()
@@ -52,3 +52,7 @@ export class FilterDto {
   @IsOptional()
   messagesOrder?: order;
 }
+
+export class FilterCurrentUserMessagesDto extends OmitType(FilterDto, [
+  'name',
+] as const) {}

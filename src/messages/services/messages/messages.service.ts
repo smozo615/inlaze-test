@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 
 import { Message } from 'src/messages/models/messages.model';
 import {
@@ -24,7 +24,7 @@ export class MessagesService {
   }
 
   async findAll(filters?: FilterDto) {
-    const options = {
+    const options: FindOptions = {
       include: {
         model: User,
         where: {},
@@ -34,7 +34,7 @@ export class MessagesService {
     };
 
     if (filters.name) {
-      options.include.where = {
+      options.include['where'] = {
         fullName: {
           [Op.iLike]: `%${filters.name}%`,
         },
@@ -42,19 +42,28 @@ export class MessagesService {
     }
 
     if (filters.date) {
-      options.where = { date: { [Op.gte]: `${filters.date}` } };
+      options.where['date'] = { [Op.gte]: `${filters.date}` };
     }
 
     if (filters.messagesOrder) {
-      options.order.push(['date', `${filters.messagesOrder}`]);
+      options.order[0] = ['date', `${filters.messagesOrder}`];
     }
 
     const messages = await this.messageModel.findAll(options);
     return messages;
   }
 
-  async findCurrentUserMessage(userId: number) {
-    const messages = await this.messageModel.findAll({ where: { userId } });
+  async findCurrentUserMessage(userId: number, filters?) {
+    const options: FindOptions = { where: { userId } };
+
+    if (filters.date) {
+      options.where['date'] = { [Op.gte]: `${filters.date}` };
+    }
+
+    if (filters.messagesOrder) {
+      options.order[0] = ['date', `${filters.messagesOrder}`];
+    }
+    const messages = await this.messageModel.findAll(options);
     return messages;
   }
 
